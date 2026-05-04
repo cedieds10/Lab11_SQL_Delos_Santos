@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Management Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f6f9; }
+        .card { background: white; max-width: 450px; margin: 40px auto; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { margin-top: 0; color: #333; text-align: center; }
+        .avatar-container { text-align: center; margin-bottom: 20px; }
+        .avatar { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #007bff; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        input[type="text"], input[type="file"] { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        button { width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        button:hover { background-color: #0056b3; }
+        .alert { padding: 12px; border-radius: 4px; margin-bottom: 15px; text-align: center; }
+        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>User Dashboard</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="avatar-container">
+        {% if user['image_filename'] == 'default.png' %}
+            <img src="https://ui-avatars.com/api/?name={{ user['display_name'] }}&background=0D8ABC&color=fff&size=120" alt="Profile Picture" class="avatar">
+        {% else %}
+            <img src="{{ url_for('static', filename='uploads/' + user['image_filename']) }}" alt="Profile Picture" class="avatar">
+        {% endif %}
+    </div>
+
+    <form action="/" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="display_name">Display Name:</label>
+            <input type="text" id="display_name" name="display_name" value="{{ user['display_name'] }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="profile_picture">Change Profile Picture (.png, .jpg, .jpeg):</label>
+            <input type="file" id="profile_picture" name="profile_picture" accept=".jpg,.jpeg,.png">
+        </div>
+
+        <button type="submit">Update Profile</button>
+    </form>
+</div>
+
+</body>
+</html>
